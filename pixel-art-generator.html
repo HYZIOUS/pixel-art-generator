@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Art Generator</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    #pixelCanvas { border: 1px solid black; margin: 20px; }
+    .controls { margin-top: 20px; }
+    .color-box { width: 30px; height: 30px; display: inline-block; cursor: pointer; }
+    .download-btn { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Pixel Art Generator</h1>
+  
+  <div>
+    <canvas id="pixelCanvas" width="300" height="300"></canvas>
+  </div>
+  
+  <div class="controls">
+    <div>Select Color:</div>
+    <div class="color-box" style="background-color: red;" onclick="setColor('red')"></div>
+    <div class="color-box" style="background-color: green;" onclick="setColor('green')"></div>
+    <div class="color-box" style="background-color: blue;" onclick="setColor('blue')"></div>
+    <div class="color-box" style="background-color: black;" onclick="setColor('black')"></div>
+  </div>
+  
+  <button class="download-btn" onclick="downloadImage()">Download Image</button>
+
+  <script>
+    const canvas = document.getElementById('pixelCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 20; // 20x20 grid
+    const pixelSize = 15; // each square in the grid will be 15px
+
+    let currentColor = 'black';
+    
+    // Initialize the canvas with empty white squares
+    function initCanvas() {
+      for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+          ctx.fillStyle = 'white';
+          ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+          ctx.strokeStyle = 'gray';
+          ctx.strokeRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+        }
+      }
+    }
+
+    // Set the current drawing color
+    function setColor(color) {
+      currentColor = color;
+    }
+
+    // Draw on the canvas when clicked
+    canvas.addEventListener('click', function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) / pixelSize);
+      const y = Math.floor((e.clientY - rect.top) / pixelSize);
+      
+      ctx.fillStyle = currentColor;
+      ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+    });
+
+    // Download the image as PNG
+    function downloadImage() {
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'pixel_art.png';
+      link.click();
+    }
+
+    // Initialize the canvas when the page loads
+    window.onload = initCanvas;
+  </script>
+</body>
+</html>
